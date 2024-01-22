@@ -1,6 +1,7 @@
 <section class="home__container">
   <rm-filter-form
     class="home__container--form"
+    [apiError]="apiError"
     (onFormChange)="setHomeCharacters($event)"
     (onReset)="getCharacters()"
   ></rm-filter-form>
@@ -10,7 +11,7 @@
       *ngFor="let homeCharacter of homeCharacters"
       (click)="navigateToDetail(homeCharacter.id)"
     >
-    <rm-card [cardConfig]="setCardConfig(homeCharacter)"></rm-card>
+      <rm-card [cardConfig]="setCardConfig(homeCharacter)"></rm-card>
     </button>
   </div>
 </section>

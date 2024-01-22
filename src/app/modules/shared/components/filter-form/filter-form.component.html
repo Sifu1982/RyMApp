@@ -1,22 +1,27 @@
 <form [formGroup]="filterForm" class="form__container">
+  <label class="form__container--label">Name:</label>
+  <input formControlName="name" class="form__container--control" />
   <label class="form__container--label">Gender:</label>
-  <select
-    formControlName="gender"
-    class="form__container--control"
-  >
-    <option [value]="'defaultOption'" disabled>-- Select your gender --</option>
+  <select formControlName="gender" class="form__container--control">
+    <option disabled>-- Select your gender --</option>
     <option *ngFor="let gender of genders" [value]="gender">
       {{ gender }}
     </option>
   </select>
-  <rm-button
-    [button]="updateButtonState(filterButton)"
-    (onClick)="emitForm()"
-    class="form__container--filter"
-  ></rm-button>
-  <rm-button
-    [button]="updateButtonState(resetButton)"
-    (onClick)="resetForm()"
-    class="form__container--reset"
-  ></rm-button>
+  <span validationLabel
+    [errors]="apiError"
+    class="form__container--span"
+    ></span>
+  <div class="form__container--block">
+    <rm-button
+      [button]="updateButtonState(filterButton)"
+      (onClick)="emitForm()"
+      class="form__container--filter"
+    ></rm-button>
+    <rm-button
+      [button]="updateButtonState(resetButton)"
+      (onClick)="resetForm()"
+      class="form__container--reset"
+    ></rm-button>
+  </div>
 </form>

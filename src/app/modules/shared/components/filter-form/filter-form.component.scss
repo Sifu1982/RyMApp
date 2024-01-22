@@ -1,14 +1,16 @@
 .form__container {
-  align-items: center;
   background-color: rgb(60, 62, 68);
   border-radius: 8px;
   color: white;
   display: flex;
-  flex-direction: row;
+  flex-flow: column nowrap;
   padding: 20px;
 
-  &--label {
-    margin-right: 6px;
+  &--block {
+    align-items: center;
+    display: flex;
+    flex-flow: row nowrap;
+    margin-top: 8px;
   }
 
   &--control {
@@ -19,13 +21,20 @@
 
   &--filter {
     border-radius: 8px;
-    margin: 0px 3px;
-    padding: 6px;
+    margin-right: 3px;
+  }
+
+  &--label {
+    margin: 6px;
+  }
+
+  &--span {
+    color: red;
+    margin-top: 8px;
   }
 
   &--reset {
     border-radius: 8px;
-    margin: 0px 3px;
-    padding: 6px;
+    margin-left: 3px;
   }
 }

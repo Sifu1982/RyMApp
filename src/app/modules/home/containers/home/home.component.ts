@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { Card } from 'src/app/modules/shared/interfaces/card.interface';
@@ -10,6 +11,7 @@ import { HomeService } from '../../services/home.service';
   styleUrls: ['home.component.scss'],
 })
 export class HomeComponent implements OnInit {
+  public apiError?: HttpErrorResponse;
   public homeCharacters: HomeCharacter[] = [];
 
   constructor(private homeService: HomeService, private router: Router) {}
@@ -23,11 +25,32 @@ export class HomeComponent implements OnInit {
   }
 
   public setHomeCharacters(formValue: HomeCharacter): void {
-    this.homeService
-      .setGender(formValue.gender)
-      .subscribe((filteredCharacters: HomeCharacter[]) => {
-        this.homeCharacters = filteredCharacters;
+    if (formValue.name && formValue.gender) {
+      this.homeService.getCharactersByNameAndGender(formValue.name, formValue.gender)
+      .subscribe((result) => {
+        if (result instanceof Array) {
+          this.homeCharacters = result;
+          this.apiError = undefined;
+        } else if (result instanceof HttpErrorResponse) {
+          this.apiError = result;
+          this.handleError(result);
+        }
       });
+    } else if (formValue.name) {
+      this.homeService.getCharactersByName(formValue.name).subscribe((characters) => {
+        this.homeCharacters = characters;
+        this.apiError = undefined;
+      });
+    } else if (formValue.gender) {
+      this.homeService.setGender(formValue.gender).subscribe((characters) => {
+        this.homeCharacters = characters;
+        this.apiError = undefined;
+      });
+    }
+  }
+
+  public handleError(error: HttpErrorResponse): void {
+    console.log('No hay personajes', error);
   }
 
   public setCardConfig(homeCharacter: HomeCharacter): Card {

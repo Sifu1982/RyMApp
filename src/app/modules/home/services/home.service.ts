@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import {
   CharacterResponse,
@@ -6,7 +6,7 @@ import {
 } from '../../shared/interfaces/character-interface';
 import { environment } from 'src/environments/environment.development';
 import { HomeCharacter } from '../interfaces/home.character.interface';
-import { Observable, map } from 'rxjs';
+import { Observable, catchError, map, of } from 'rxjs';
 
 @Injectable()
 export class HomeService {
@@ -31,6 +31,42 @@ export class HomeService {
     );
   }
 
+  public getCharactersByName(name: string): Observable<HomeCharacter[]> {
+    const characterNameUrl = `${this.baseUrl}/character/?name=${name}`;
+
+    return this.http.get<CharacterResponse>(characterNameUrl).pipe(
+      map<CharacterResponse, HomeCharacter[]>(
+        (characterResponse: CharacterResponse) =>
+        characterResponse.results.map((homeCharacter: HomeCharacter) => ({
+          id: homeCharacter.id,
+          name: homeCharacter.name,
+          species: homeCharacter.species,
+          gender: homeCharacter.gender,
+          image: homeCharacter.image,
+        }))
+      ));
+  }
+
+  public getCharactersByNameAndGender(name: string, gender: Gender): Observable<HomeCharacter[] | HttpErrorResponse> {
+    const characterNameAndGenderUrl = `${this.baseUrl}/character/?name=${name}&gender=${gender}`;
+
+    return this.http.get<CharacterResponse>(characterNameAndGenderUrl).pipe(
+      map<CharacterResponse, HomeCharacter[]>(
+        (characterResponse: CharacterResponse) =>
+          characterResponse.results.map((homeCharacter: HomeCharacter) => ({
+            id: homeCharacter.id,
+            name: homeCharacter.name,
+            species: homeCharacter.species,
+            gender: homeCharacter.gender,
+            image: homeCharacter.image,
+          }))
+      ),
+      catchError((error: HttpErrorResponse) => {
+        return of( error );
+      }),
+    );
+  }
+
   public setGender(gender: Gender): Observable<HomeCharacter[]> {
     const characterUrl = `${this.baseUrl}/character/?gender=${gender}`;
 
@@ -46,4 +82,5 @@ export class HomeService {
         }))
       ));
   }
+
 }
